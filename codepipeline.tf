@@ -74,7 +74,7 @@ resource "aws_codepipeline" "this" {
 
       action {
         owner            = "AWS"
-        name             = var.codebuild_container_dupliacator_name
+        name             = var.codebuild_container_duplicator_name
         category         = "Build"
         provider         = "CodeBuild"
         version          = "1"
@@ -93,7 +93,7 @@ resource "aws_codepipeline" "this" {
               type  = "PLAINTEXT"
             }
           ])
-          ProjectName          = var.codebuild_container_dupliacator_name
+          ProjectName          = var.codebuild_container_duplicator_name
         }
       }
     }

@@ -22,7 +22,7 @@ variable "input_tags" {
   }
 }
 
-variable "codebuild_container_dupliacator_name" {
+variable "codebuild_container_duplicator_name" {
   description = "Optional variable to be provided when you are pushing containers to another repo after a successful code pipeline"
   type        = string
   default     = ""
