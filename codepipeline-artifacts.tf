@@ -47,6 +47,7 @@ Resources:
         LoadBalancerInfo: 
           ContainerName: "${var.ecs_services[each.key].lb_container_name}" 
           ContainerPort: "${var.ecs_services[each.key].lb_container_port}" 
+        PlatformVersion: "${var.ecs_services[each.key].platform_version}"
 EOF
     
   }
