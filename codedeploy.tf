@@ -44,7 +44,7 @@ resource "aws_codedeploy_deployment_group" "this" {
       prod_traffic_route {
         listener_arns = [var.ecs_services[each.key].lb_listener_prod_arn]
       }
-      test_traffic_route{
+      test_traffic_route {
         listener_arns = [var.ecs_services[each.key].lb_listener_test_arn]
       }
 

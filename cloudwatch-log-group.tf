@@ -8,7 +8,7 @@ resource "aws_cloudwatch_log_group" "this" {
   # lifecycle {
   #   prevent_destroy   = true
   # }
-  
+
   tags = merge(var.input_tags, {})
 }
 

@@ -1,12 +1,12 @@
 resource "aws_codepipeline" "this" {
   for_each = var.ecs_services
 
-  name                = var.ecs_services[each.key].service_name
-  role_arn            = var.ecs_services[each.key].codedepipeline_role_arn
+  name     = var.ecs_services[each.key].service_name
+  role_arn = var.ecs_services[each.key].codedepipeline_role_arn
 
   artifact_store {
-    location          = aws_s3_bucket_object.artifacts_s3[each.key].bucket
-    type              = "S3"
+    location = aws_s3_bucket_object.artifacts_s3[each.key].bucket
+    type     = "S3"
   }
 
   stage {
@@ -25,7 +25,7 @@ resource "aws_codepipeline" "this" {
         ImageTag       = var.ecs_services[each.key].container_target_tag
       }
     }
-  
+
     action {
       owner            = "AWS"
       name             = "ArtifactsS3"
@@ -34,9 +34,9 @@ resource "aws_codepipeline" "this" {
       version          = "1"
       output_artifacts = ["ArtifactsS3"]
 
-      configuration    = {
-        S3Bucket       = aws_s3_bucket_object.artifacts_s3[each.key].bucket #
-        S3ObjectKey    = aws_s3_bucket_object.artifacts_s3[each.key].key
+      configuration = {
+        S3Bucket    = aws_s3_bucket_object.artifacts_s3[each.key].bucket #
+        S3ObjectKey = aws_s3_bucket_object.artifacts_s3[each.key].key
       }
     }
   }
@@ -54,18 +54,18 @@ resource "aws_codepipeline" "this" {
       version         = "1"
 
       configuration = {
-        AppSpecTemplateArtifact         = "ArtifactsS3"
-        ApplicationName                 = var.ecs_services[each.key].service_name
-        DeploymentGroupName             = aws_codedeploy_deployment_group.this[each.key].deployment_group_name
-        Image1ArtifactName              = "ArtifactsECR"
-        Image1ContainerName             = "IMAGE1_NAME"
-        TaskDefinitionTemplateArtifact  = "ArtifactsS3"
-        AppSpecTemplatePath             = "appspec.yaml"
-        TaskDefinitionTemplatePath      = "taskdef.json"
+        AppSpecTemplateArtifact        = "ArtifactsS3"
+        ApplicationName                = var.ecs_services[each.key].service_name
+        DeploymentGroupName            = aws_codedeploy_deployment_group.this[each.key].deployment_group_name
+        Image1ArtifactName             = "ArtifactsECR"
+        Image1ContainerName            = "IMAGE1_NAME"
+        TaskDefinitionTemplateArtifact = "ArtifactsS3"
+        AppSpecTemplatePath            = "appspec.yaml"
+        TaskDefinitionTemplatePath     = "taskdef.json"
       }
     }
   }
-  
+
   dynamic stage {
     for_each = var.ecs_services[each.key].container_duplicate_targets
 
@@ -73,11 +73,11 @@ resource "aws_codepipeline" "this" {
       name = "ContainerDuplication-${var.ecs_services[each.key].container_duplicate_targets.target.repo}"
 
       action {
-        owner            = "AWS"
-        name             = var.codebuild_container_duplicator_name
-        category         = "Build"
-        provider         = "CodeBuild"
-        version          = "1"
+        owner           = "AWS"
+        name            = var.codebuild_container_duplicator_name
+        category        = "Build"
+        provider        = "CodeBuild"
+        version         = "1"
         input_artifacts = ["ArtifactsECR"]
 
         configuration = {
@@ -93,7 +93,7 @@ resource "aws_codepipeline" "this" {
               type  = "PLAINTEXT"
             }
           ])
-          ProjectName          = var.codebuild_container_duplicator_name
+          ProjectName = var.codebuild_container_duplicator_name
         }
       }
     }
@@ -154,7 +154,7 @@ DOC
 
 resource "aws_cloudwatch_event_rule" "this" {
   for_each = var.ecs_services
-  
+
   name        = "codepipeline-trigger-${var.ecs_services[each.key].service_name}"
   description = "Event-based trigger that starts codepipeline for ${var.ecs_services[each.key].service_name}"
 

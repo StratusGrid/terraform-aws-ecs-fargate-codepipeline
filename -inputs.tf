@@ -30,7 +30,7 @@ variable "codebuild_container_duplicator_name" {
 
 variable "ecs_services" {
   description = "List of Maps containing all settings which are configured per task definition."
-  type        = map(object(
+  type = map(object(
     {
       service_name     = string
       platform_version = string
@@ -68,8 +68,8 @@ variable "ecs_services" {
       taskdef_task_role_arn            = string
       taskdef_network_mode             = string
       taskdef_requires_compatibilities = list(string)
-      taskdef_cpu    = number
-      taskdef_memory = number
+      taskdef_cpu                      = number
+      taskdef_memory                   = number
 
       taskdef_container_definitions      = string
       codepipeline_container_definitions = string

@@ -54,7 +54,7 @@ resource "aws_ecs_service" "this" {
   }
 
   deployment_controller {
-    type             =  "CODE_DEPLOY"
+    type = "CODE_DEPLOY"
   }
 
   tags = merge(var.input_tags, {})
