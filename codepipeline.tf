@@ -1,6 +1,8 @@
 resource "aws_codepipeline" "this" {
   for_each = var.ecs_services
 
+  tags = var.input_tags
+
   name     = var.ecs_services[each.key].service_name
   role_arn = var.ecs_services[each.key].codedepipeline_role_arn
 
@@ -43,15 +45,30 @@ resource "aws_codepipeline" "this" {
 
 
   stage {
-    name = "Deploy"
+    name = "Deploy_to_${upper(var.env_name)}"
 
+    dynamic "action" {
+      for_each = var.ecs_services[each.key].deployment_manual_approval
+      content {
+        category         = "Approval"
+        configuration    = {}
+        input_artifacts  = []
+        name             = "Deploy_Approval"
+        output_artifacts = []
+        owner            = "AWS"
+        provider         = "Manual"
+        run_order        = 1
+        version          = "1"
+      }
+    }
     action {
-      name            = "Deploy"
+      name            = "Deploy_to_${upper(var.env_name)}"
       category        = "Deploy"
       owner           = "AWS"
       provider        = "CodeDeployToECS"
       input_artifacts = ["ArtifactsECR", "ArtifactsS3"]
       version         = "1"
+      run_order       = 2
 
       configuration = {
         AppSpecTemplateArtifact        = "ArtifactsS3"
@@ -71,6 +88,22 @@ resource "aws_codepipeline" "this" {
 
     content {
       name = "ContainerDuplication-${var.ecs_services[each.key].container_duplicate_targets.target.repo}"
+      #name = "Push_container_to_${var.env_name}"
+
+      dynamic "action" {
+        for_each = var.ecs_services[each.key].duplication_manual_approval
+        content {
+          category         = "Approval"
+          configuration    = {}
+          input_artifacts  = []
+          name             = "Duplication_Approval"
+          output_artifacts = []
+          owner            = "AWS"
+          provider         = "Manual"
+          run_order        = 1
+          version          = "1"
+        }
+      }
 
       action {
         owner           = "AWS"
@@ -78,6 +111,7 @@ resource "aws_codepipeline" "this" {
         category        = "Build"
         provider        = "CodeBuild"
         version         = "1"
+        run_order       = 2
         input_artifacts = ["ArtifactsECR"]
 
         configuration = {
@@ -147,9 +181,6 @@ resource "aws_iam_role_policy" "this" {
 }
 DOC
 }
-
-
-
 
 
 resource "aws_cloudwatch_event_rule" "this" {

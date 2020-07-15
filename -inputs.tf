@@ -1,3 +1,8 @@
+variable "env_name" {
+  description = "name of environment/stage, passed in from root module"
+  type        = string
+}
+
 variable "ecs_cluster_name" {
   description = "name to be used for ecs cluster and base log group"
   type        = string
@@ -17,7 +22,7 @@ variable "input_tags" {
   description = "Map of tags to apply to resources"
   type        = map(string)
   default = {
-    Developer   = "GenesisFunction"
+    Developer   = "StratusGrid"
     Provisioner = "Terraform"
   }
 }
@@ -51,9 +56,10 @@ variable "ecs_services" {
       lb_container_name          = string
       lb_container_port          = number
 
-      codedeploy_role_arn             = string
-      codebuild_auto_rollback_enabled = bool
-      codebuild_auto_rollback_events  = list(string)
+      codedeploy_role_arn              = string
+      codedeploy_termination_wait_time = number
+      codebuild_auto_rollback_enabled  = bool
+      codebuild_auto_rollback_events   = list(string)
 
       codedepipeline_role_arn        = string
       codepipeline_source_bucket_id  = string
@@ -62,6 +68,8 @@ variable "ecs_services" {
       container_repo_name         = string
       container_target_tag        = string
       container_duplicate_targets = map(any) #This must have values for target_repo and target_account or an empty map
+      deployment_manual_approval  = list(string)
+      duplication_manual_approval = list(string)
 
       taskdef_family                   = string
       taskdef_execution_role_arn       = string
