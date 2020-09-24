@@ -37,6 +37,7 @@ resource "aws_codepipeline" "this" {
       output_artifacts = ["ArtifactsS3"]
 
       configuration = {
+        PollForSourceChanges = "false"
         S3Bucket    = aws_s3_bucket_object.artifacts_s3[each.key].bucket #
         S3ObjectKey = aws_s3_bucket_object.artifacts_s3[each.key].key
       }
