@@ -38,6 +38,13 @@ resource "aws_ecs_service" "this" {
     assign_public_ip = var.ecs_services[each.key].assign_public_ip
   }
 
+  dynamic service_registries {
+    for_each = lookup(each.value, "service_registries", {})
+    content {
+      registry_arn = service_registries.value
+    }
+  }
+
   health_check_grace_period_seconds = var.ecs_services[each.key].health_check_grace_period_seconds
   #dynamic "load_balancer" {
   #  for_each = var.ecs_services[each.key].lb_toggle

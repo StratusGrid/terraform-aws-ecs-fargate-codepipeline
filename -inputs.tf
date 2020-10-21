@@ -46,6 +46,8 @@ variable "ecs_services" {
       propagate_tags   = string
       log_group_path   = string
 
+      service_registries = map(string)
+
       health_check_grace_period_seconds = number
 
       lb_listener_prod_arn       = string

@@ -38,6 +38,38 @@ module "ecs_app_iam_role" {
   input_tags = merge(local.common_tags, {})
 }
 
+
+resource "aws_service_discovery_private_dns_namespace" "discovery_namespace" {
+  name        = "discovery.${var.env_name}.mydomain.com"
+  description = "My services ${var.env_name} discovery namespace"
+  vpc         = data.aws_vpc.venue_ott_microservices.id
+
+  tags = merge(local.common_tags, {})
+}
+
+resource "aws_service_discovery_service" "discovery_service" {
+
+  name = "myapp"
+
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.discovery_namespace.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+
+//  health_check_config {
+//    failure_threshold = 10
+//    resource_path     = "path"
+//    type              = "HTTP"
+//  }
+
+  tags = merge(local.common_tags, {})
+}
+
+
 # valid combinations of cpu/memory in task definition: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 module "ecs_fargate_app" {
   source = "./modules/ecs-fargate/"
@@ -64,6 +96,11 @@ module "ecs_fargate_app" {
       subnets          = module.vpc_qa_automation.public_subnets
       assign_public_ip = true
       propagate_tags   = "TASK_DEFINITION"
+      log_group_path   = local.sso_service_log_group_a
+
+      service_registries = { // only accepts a single block
+        registry_arn = aws_service_discovery_service.discovery_service.arn
+      }
 
       # load balancer configs
       health_check_grace_period_seconds = 10
