@@ -48,7 +48,6 @@ resource "aws_service_discovery_private_dns_namespace" "discovery_namespace" {
 }
 
 resource "aws_service_discovery_service" "discovery_service" {
-
   name = "myapp"
 
   dns_config {
@@ -60,19 +59,15 @@ resource "aws_service_discovery_service" "discovery_service" {
     }
   }
 
-//  health_check_config {
-//    failure_threshold = 10
-//    resource_path     = "path"
-//    type              = "HTTP"
-//  }
-
   tags = merge(local.common_tags, {})
 }
 
 
 # valid combinations of cpu/memory in task definition: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 module "ecs_fargate_app" {
-  source = "./modules/ecs-fargate/"
+  source  = "StratusGrid/ecs-fargate-codepipeline/aws"
+  version = "0.0.5"
+  # source  = "github.com/StratusGrid/terraform-aws-ecs-fargate-codepipeline"
 
   ecs_cluster_name   = "${var.name_prefix}-app${local.name_suffix}"
   log_retention_days = 30
