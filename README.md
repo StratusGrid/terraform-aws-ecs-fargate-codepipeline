@@ -66,7 +66,7 @@ resource "aws_service_discovery_service" "discovery_service" {
 # valid combinations of cpu/memory in task definition: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 module "ecs_fargate_app" {
   source  = "StratusGrid/ecs-fargate-codepipeline/aws"
-  version = "0.0.5"
+  version = "0.1.1"
   # source  = "github.com/StratusGrid/terraform-aws-ecs-fargate-codepipeline"
 
   ecs_cluster_name   = "${var.name_prefix}-app${local.name_suffix}"
