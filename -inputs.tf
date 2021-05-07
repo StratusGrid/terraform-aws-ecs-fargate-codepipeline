@@ -27,6 +27,12 @@ variable "input_tags" {
   }
 }
 
+variable "termination_wait_time" {
+  description = "Termination wait time for blue green deployments"
+  type        = number
+  default     = 5
+}
+
 variable "codebuild_container_duplicator_name" {
   description = "Optional variable to be provided when you are pushing containers to another repo after a successful code pipeline"
   type        = string
