@@ -90,6 +90,8 @@ variable "ecs_services" {
       taskdef_container_definitions      = string
       codepipeline_container_definitions = string
 
+      efs_volume = map(string)
+
       # task_definition = string
     }
   ))

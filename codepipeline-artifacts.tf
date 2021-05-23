@@ -30,6 +30,7 @@ data "archive_file" "artifacts" {
   ],
   "requiresCompatibilities": ${jsonencode(var.ecs_services[each.key].taskdef_requires_compatibilities)},
   "networkMode": "${var.ecs_services[each.key].taskdef_network_mode}",
+  "volumes": ${jsonencode(aws_ecs_task_definition.this[each.key].volume)},
   "containerDefinitions": ${var.ecs_services[each.key].codepipeline_container_definitions}
 }
 EOF
@@ -38,15 +39,15 @@ EOF
   source {
     filename = "appspec.yaml"
     content  = <<EOF
-version: 0.0 
-Resources: 
-  - TargetService: 
-      Type: AWS::ECS::Service 
-      Properties: 
-        TaskDefinition: <TASK_DEFINITION> 
-        LoadBalancerInfo: 
-          ContainerName: "${var.ecs_services[each.key].lb_container_name}" 
-          ContainerPort: "${var.ecs_services[each.key].lb_container_port}" 
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: <TASK_DEFINITION>
+        LoadBalancerInfo:
+          ContainerName: "${var.ecs_services[each.key].lb_container_name}"
+          ContainerPort: "${var.ecs_services[each.key].lb_container_port}"
         PlatformVersion: "${var.ecs_services[each.key].platform_version}"
 EOF
 
