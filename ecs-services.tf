@@ -38,10 +38,22 @@ resource "aws_ecs_service" "this" {
     assign_public_ip = var.ecs_services[each.key].assign_public_ip
   }
 
-  dynamic service_registries {
+  dynamic "service_registries" {
     for_each = lookup(each.value, "service_registries", {})
     content {
       registry_arn = service_registries.value
+    }
+  }
+
+  dynamic "volume" {
+    for_each = var.ecs_services[each.key].efs_volume
+
+    content {
+      name = var.ecs_services[each.key].efs_volume.name
+      efs_volume_configuration {
+        file_system_id = var.ecs_services[each.key].efs_volume.file_system_id
+        root_directory = var.ecs_services[each.key].efs_volume.root_directory
+      }
     }
   }
 
