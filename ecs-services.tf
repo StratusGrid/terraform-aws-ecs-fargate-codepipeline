@@ -38,6 +38,8 @@ resource "aws_ecs_service" "this" {
     assign_public_ip = var.ecs_services[each.key].assign_public_ip
   }
 
+  enable_execute_command = var.ecs_services[each.key].enable_execute_command
+
   dynamic service_registries {
     for_each = lookup(each.value, "service_registries", {})
     content {

@@ -51,6 +51,7 @@ variable "ecs_services" {
       assign_public_ip = bool
       propagate_tags   = string
       log_group_path   = string
+      enable_execute_command = bool
 
       service_registries = map(string)
 

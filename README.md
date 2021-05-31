@@ -92,6 +92,7 @@ module "ecs_fargate_app" {
       assign_public_ip = true
       propagate_tags   = "TASK_DEFINITION"
       log_group_path   = local.sso_service_log_group_a
+      enable_execute_command = false
 
       service_registries = { // only accepts a single block
         registry_arn = aws_service_discovery_service.discovery_service.arn
