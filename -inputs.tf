@@ -43,14 +43,14 @@ variable "ecs_services" {
   description = "List of Maps containing all settings which are configured per task definition."
   type = map(object(
     {
-      service_name     = string
-      platform_version = string
-      desired_count    = number
-      security_groups  = list(string)
-      subnets          = list(string)
-      assign_public_ip = bool
-      propagate_tags   = string
-      log_group_path   = string
+      service_name           = string
+      platform_version       = string
+      desired_count          = number
+      security_groups        = list(string)
+      subnets                = list(string)
+      assign_public_ip       = bool
+      propagate_tags         = string
+      log_group_path         = string
       enable_execute_command = bool
 
       service_registries = map(string)

@@ -1,11 +1,11 @@
 output "ecs_cluster_name" {
   description = "ARN of ECS cluster created by this module."
-  value = aws_ecs_cluster.this.name
+  value       = aws_ecs_cluster.this.name
 }
 
 output "ecs_cluster_arn" {
   description = "ARN of ECS cluster created by this module."
-  value = aws_ecs_cluster.this.arn
+  value       = aws_ecs_cluster.this.arn
 }
 
 output "codedeploy_app_arns_map" {

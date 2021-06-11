@@ -38,8 +38,8 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         PollForSourceChanges = "false"
-        S3Bucket    = aws_s3_bucket_object.artifacts_s3[each.key].bucket #
-        S3ObjectKey = aws_s3_bucket_object.artifacts_s3[each.key].key
+        S3Bucket             = aws_s3_bucket_object.artifacts_s3[each.key].bucket #
+        S3ObjectKey          = aws_s3_bucket_object.artifacts_s3[each.key].key
       }
     }
   }
@@ -84,7 +84,7 @@ resource "aws_codepipeline" "this" {
     }
   }
 
-  dynamic stage {
+  dynamic "stage" {
     for_each = var.ecs_services[each.key].container_duplicate_targets
 
     content {

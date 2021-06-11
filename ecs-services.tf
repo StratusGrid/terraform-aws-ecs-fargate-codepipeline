@@ -40,7 +40,7 @@ resource "aws_ecs_service" "this" {
 
   enable_execute_command = var.ecs_services[each.key].enable_execute_command
 
-  dynamic service_registries {
+  dynamic "service_registries" {
     for_each = lookup(each.value, "service_registries", {})
     content {
       registry_arn = service_registries.value
