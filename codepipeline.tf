@@ -82,6 +82,23 @@ resource "aws_codepipeline" "this" {
         TaskDefinitionTemplatePath     = "taskdef.json"
       }
     }
+    dynamic "action" {
+      for_each = var.ecs_services[each.key].postdeploy_codebuild_project_name
+      content {
+        category = "Build"
+        name = "PostDeploy_CodeBuild"
+        owner = "AWS"
+        provider = "CodeBuild"
+        version = "1"
+        run_order = 3
+        input_artifacts = ["ArtifactsECR", "ArtifactsS3"]
+        output_artifacts = []
+
+        configuration = {
+          ProjectName = join("", var.ecs_services[each.key].postdeploy_codebuild_project_name)
+        }
+      }
+    }
   }
 
   dynamic "stage" {
