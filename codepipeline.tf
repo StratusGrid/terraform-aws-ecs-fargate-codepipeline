@@ -91,7 +91,7 @@ resource "aws_codepipeline" "this" {
         provider          = "CodeBuild"
         version           = "1"
         run_order         = 3
-        input_artifacts   = ["ArtifactsECR", "ArtifactsS3"]
+        input_artifacts   = ["ArtifactsECR"]
         output_artifacts  = []
 
         configuration = {
