@@ -28,7 +28,7 @@ variable "input_tags" {
 }
 
 variable "termination_wait_time" {
-  description = "Termination wait time for blue green deployments"
+  description = "Deprecated. Use codedeploy_termination_wait_time in the ecs_services object instead."
   type        = number
   default     = 5
 }
