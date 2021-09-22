@@ -188,7 +188,7 @@ DEFINITION
 ---
 
 ## Contributors
-- Chris Hurst [GenesisChris](https://github.com/GenesisChris)
+- Chris Hurst [StratusChris](https://github.com/StratusChris)
 - Ivan Casco [ivancasco-sg](https://github.com/ivancasco-sg)
 - Jason Drouhard [jason-drouhard](https://github.com/jason-drouhard)
 - Matt Barlow [mattbarlow-sg](https://github.com/mattbarlow-sg)
