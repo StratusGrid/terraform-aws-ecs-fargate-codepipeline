@@ -28,7 +28,7 @@ resource "aws_ecs_service" "this" {
   cluster          = aws_ecs_cluster.this.id
   task_definition  = aws_ecs_task_definition.this[each.key].arn
   desired_count    = var.ecs_services[each.key].desired_count
-  launch_type      = "FARGATE"
+  launch_type      = var.ecs_services[each.key].use_custom_capacity_provider_strategy == true ? null : "FARGATE"
   platform_version = var.ecs_services[each.key].platform_version
   propagate_tags   = var.ecs_services[each.key].propagate_tags
 
@@ -44,6 +44,23 @@ resource "aws_ecs_service" "this" {
     for_each = lookup(each.value, "service_registries", {})
     content {
       registry_arn = service_registries.value
+    }
+  }
+
+  dynamic "capacity_provider_strategy" {
+    for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
+    content {
+      base              = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_base")
+      capacity_provider = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider")
+      weight            = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_weight")
+    }
+  }
+
+  dynamic "capacity_provider_strategy" {
+    for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
+    content {
+      capacity_provider = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider")
+      weight            = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider_weight")
     }
   }
 

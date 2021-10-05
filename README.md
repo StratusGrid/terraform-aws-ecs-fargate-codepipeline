@@ -100,6 +100,11 @@ module "ecs_fargate_app" {
         registry_arn = aws_service_discovery_service.discovery_service.arn
       }
 
+      capacity_provider_strategy = { // must do block for each capacity provider
+        base              = 1
+        capacity_provider = "FARGATE"
+        weight            = 0        
+      }
       # load balancer configs
       health_check_grace_period_seconds = 10
       
