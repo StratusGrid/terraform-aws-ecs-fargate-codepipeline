@@ -66,14 +66,14 @@ resource "aws_codepipeline" "this" {
     dynamic "action" {
       for_each = var.ecs_services[each.key].predeploy_codebuild_project_name
       content {
-        category          = "Build"
-        name              = "PreDeploy_CodeBuild"
-        owner             = "AWS"
-        provider          = "CodeBuild"
-        version           = "1"
-        run_order         = 2
-        input_artifacts   = ["ArtifactsECR"]
-        output_artifacts  = []
+        category         = "Build"
+        name             = "PreDeploy_CodeBuild"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        version          = "1"
+        run_order        = 2
+        input_artifacts  = ["ArtifactsECR"]
+        output_artifacts = []
 
         configuration = {
           ProjectName = join("", var.ecs_services[each.key].predeploy_codebuild_project_name)
@@ -105,14 +105,14 @@ resource "aws_codepipeline" "this" {
     dynamic "action" {
       for_each = var.ecs_services[each.key].postdeploy_codebuild_project_name
       content {
-        category          = "Build"
-        name              = "PostDeploy_CodeBuild"
-        owner             = "AWS"
-        provider          = "CodeBuild"
-        version           = "1"
-        run_order         = 4
-        input_artifacts   = ["ArtifactsECR"]
-        output_artifacts  = []
+        category         = "Build"
+        name             = "PostDeploy_CodeBuild"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        version          = "1"
+        run_order        = 4
+        input_artifacts  = ["ArtifactsECR"]
+        output_artifacts = []
 
         configuration = {
           ProjectName = join("", var.ecs_services[each.key].postdeploy_codebuild_project_name)
