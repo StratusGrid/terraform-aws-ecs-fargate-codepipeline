@@ -55,6 +55,9 @@ variable "ecs_services" {
 
       service_registries = map(string)
 
+      use_custom_capacity_provider_strategy = bool
+      custom_capacity_provider_strategy = map(string)
+
       health_check_grace_period_seconds = number
 
       lb_listener_prod_arn       = string

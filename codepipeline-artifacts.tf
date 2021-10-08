@@ -35,20 +35,48 @@ data "archive_file" "artifacts" {
 EOF
   }
 
-  source {
-    filename = "appspec.yaml"
-    content  = <<EOF
-version: 0.0 
-Resources: 
-  - TargetService: 
-      Type: AWS::ECS::Service 
-      Properties: 
-        TaskDefinition: <TASK_DEFINITION> 
-        LoadBalancerInfo: 
-          ContainerName: "${var.ecs_services[each.key].lb_container_name}" 
-          ContainerPort: "${var.ecs_services[each.key].lb_container_port}" 
-        PlatformVersion: "${var.ecs_services[each.key].platform_version}"
-EOF
-
+  dynamic source {
+    for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == true ? [1] : []
+    content {
+      filename = "appspec.yaml"
+      content = <<-EOF
+      version: 0.0
+      Resources:
+        - TargetService:
+            Type: AWS::ECS::Service
+            Properties:
+              TaskDefinition: <TASK_DEFINITION>
+              LoadBalancerInfo:
+                ContainerName: "${var.ecs_services[each.key].lb_container_name}"
+                ContainerPort: "${var.ecs_services[each.key].lb_container_port}"
+              PlatformVersion: "${var.ecs_services[each.key].platform_version}"
+              CapacityProviderStrategy:
+                - Base: "${lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_base")}"
+                  CapacityProvider: "${lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider")}"
+                  Weight: "${lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_weight")}"
+                - CapacityProvider: "${lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider")}"
+                  Weight: "${lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider_weight")}"
+      EOF
+    }
   }
+
+  dynamic source {
+    for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == false ? [1] : []
+    content {
+      filename = "appspec.yaml"
+      content = <<-EOF
+      version: 0.0
+      Resources:
+        - TargetService:
+            Type: AWS::ECS::Service
+            Properties:
+              TaskDefinition: <TASK_DEFINITION>
+              LoadBalancerInfo:
+                ContainerName: "${var.ecs_services[each.key].lb_container_name}"
+                ContainerPort: "${var.ecs_services[each.key].lb_container_port}"
+              PlatformVersion: "${var.ecs_services[each.key].platform_version}"
+      EOF
+    }
+  }
+
 }
