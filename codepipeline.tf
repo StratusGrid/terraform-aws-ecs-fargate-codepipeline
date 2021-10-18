@@ -62,6 +62,25 @@ resource "aws_codepipeline" "this" {
         version          = "1"
       }
     }
+
+    dynamic "action" {
+      for_each = var.ecs_services[each.key].predeploy_codebuild_project_name
+      content {
+        category         = "Build"
+        name             = "PreDeploy_CodeBuild"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        version          = "1"
+        run_order        = 2
+        input_artifacts  = ["ArtifactsECR"]
+        output_artifacts = []
+
+        configuration = {
+          ProjectName = join("", var.ecs_services[each.key].predeploy_codebuild_project_name)
+        }
+      }
+    }
+
     action {
       name            = "Deploy_to_${upper(var.env_name)}"
       category        = "Deploy"
@@ -69,7 +88,7 @@ resource "aws_codepipeline" "this" {
       provider        = "CodeDeployToECS"
       input_artifacts = ["ArtifactsECR", "ArtifactsS3"]
       version         = "1"
-      run_order       = 2
+      run_order       = 3
 
       configuration = {
         AppSpecTemplateArtifact        = "ArtifactsS3"
@@ -82,17 +101,18 @@ resource "aws_codepipeline" "this" {
         TaskDefinitionTemplatePath     = "taskdef.json"
       }
     }
+
     dynamic "action" {
       for_each = var.ecs_services[each.key].postdeploy_codebuild_project_name
       content {
-        category          = "Build"
-        name              = "PostDeploy_CodeBuild"
-        owner             = "AWS"
-        provider          = "CodeBuild"
-        version           = "1"
-        run_order         = 3
-        input_artifacts   = ["ArtifactsECR"]
-        output_artifacts  = []
+        category         = "Build"
+        name             = "PostDeploy_CodeBuild"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        version          = "1"
+        run_order        = 4
+        input_artifacts  = ["ArtifactsECR"]
+        output_artifacts = []
 
         configuration = {
           ProjectName = join("", var.ecs_services[each.key].postdeploy_codebuild_project_name)

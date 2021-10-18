@@ -94,6 +94,7 @@ variable "ecs_services" {
       taskdef_container_definitions      = string
       codepipeline_container_definitions = string
 
+      predeploy_codebuild_project_name  = list(string)
       postdeploy_codebuild_project_name = list(string)
 
       # task_definition = string
