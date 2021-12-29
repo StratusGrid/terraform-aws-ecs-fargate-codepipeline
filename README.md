@@ -76,6 +76,11 @@ module "ecs_fargate_app" {
   vpc_id             = data.aws_vpc.vpc_microservices.id
 
   input_tags = merge(local.common_tags, {})
+  
+  codebuild_container_duplicator_name = aws_codebuild_project.codebuild_container_duplicator.name
+
+  ecs_services = {
+    service_name = local.service_name
 
   task_definitions = [
     {
@@ -139,9 +144,115 @@ module "ecs_fargate_app" {
     }
   }
 ]
-DEFINITION
+
+# example of the locals file 
+locals {
+  service_name = {
+    service_name           = "MyService"
+    platform_version       = "1.4.0"
+    desired_count          = 3
+    security_groups        = ["sg-02f8f5de8655a798f","sg-031232157553fbec9"]
+    subnets                = ["subnet-0735beb51e4293b3e","subnet-0fdc8f5dc6d101035"]
+    assign_public_ip       = false
+    propagate_tags         = "TASK_DEFINITION"
+    log_group_path         = "/ecs/cluster_name/service_name"
+    enable_execute_command = true
+
+    service_registries = {}
+
+    #NOTE: ALBs are not created by the module.
+    health_check_grace_period_seconds = 600
+    lb_listener_prod_arn              = "arn:aws:elasticloadbalancing:us-east-1:123456789876:listener/app/my_prd_listener/ed9abd4ebab2925a/9176f3bfebd6457f"
+    lb_listener_test_arn              = "arn:aws:elasticloadbalancing:us-east-1:123456789876:listener/app/my_test_listener/j6d77m8jttgd4g853/mqo39m4lcj3lfk3"
+    lb_target_group_blue_arn          = "arn:aws:elasticloadbalancing:us-east-1:123456789876:targetgroup/my_blue_target_group/f1fec68432dd54c0"
+    lb_target_group_blue_name         = my_blue_target_group
+    lb_target_group_green_name        = my_green_target_group
+    lb_container_name                 = "containername" # has to match name in container definition within task_definition
+    lb_container_port                 = 8080       # has to match port in container definition within task_definition
+
+    codedeploy_role_arn              = "arn:aws:iam::123456789876:role/my_codedeploy_role"
+    codedeploy_termination_wait_time = "5"
+    codebuild_auto_rollback_enabled  = true
+    codebuild_auto_rollback_events   = ["DEPLOYMENT_FAILURE"]
+
+    codepipeline_role_arn        = "arn:aws:iam::123456789876:role/my_codepipeline_role"
+    codepipeline_source_bucket_id  = "my_codepipeline_source_bucket_name"
+    codepipeline_source_object_key = "deployment/ecs/${var.application_name}-artifacts.zip"
+
+    container_repo_name         = "my_ecr_repository"
+    container_target_tag        = "latest" #
+    container_duplicate_targets = "${var.name_prefix}-${var.application_name}-ecr-repo-prd"
+
+    deployment_manual_approval  = local.ecs_deployment_approval[var.env_name] // boolean for environment to deploy into (prd)
+    duplication_manual_approval = local.ecs_duplication_approval[var.env_name] // boolen for environment to duplicate from (dev)
+
+    use_custom_capacity_provider_strategy = true //if false, custom_capacity_provider_strategy needs to be an emtpy block = {}
+    custom_capacity_provider_strategy = {
+      primary_capacity_provider_base      = 1
+      primary_capacity_provider           = "FARGATE"
+      primary_capacity_provider_weight    = 10
+      secondary_capacity_provider         = "FARGATE_SPOT"
+      secondary_capacity_provider_weight  = 1
     }
-  ]
+
+    taskdef_family             = "MyService"
+    taskdef_execution_role_arn = "arn:aws:iam::123456789876:role/my_taskdef_role"
+    taskdef_task_role_arn      = "arn:aws:iam::123456789876:role/my_taskdef_role"
+    taskdef_network_mode       = "awsvpc"
+    taskdef_requires_compatibilities = [
+      "FARGATE"
+    ]
+    taskdef_cpu    = 2048
+    taskdef_memory = 4096
+
+    taskdef_container_definitions = <<-TASKDEF
+      [
+        {
+          "name": "containername",
+          "image": "IMAGE1_NAME",
+          "portMappings": [
+            {
+              "hostPort": 8080,
+              "protocol": "tcp",
+              "containerPort": 8080
+            }
+          ]
+        }
+      ]
+    TASKDEF
+
+    codepipeline_container_definitions = <<-CONTAINERDEF
+    [
+      {
+        "name": "containername",
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "secretOptions": null,
+          "options": {
+            "awslogs-group": "log-group",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "portMappings": [
+          {
+            "hostPort": 8080,
+            "protocol": "tcp",
+            "containerPort": 8080
+          }
+        ],
+        "environment": [
+          { "name": "ENVIRONMENT", "value": "${var.env_name == "prd" ? "production" : "development"}" }
+        ]
+      }
+    ]
+    CONTAINERDEF
+
+    postdeploy_codebuild_project_name = ["My_PostDeploy_Project"]
+
+  } # end of service definition
 }
 ```
 
