@@ -6,7 +6,7 @@ resource "aws_s3_bucket_object" "artifacts_s3" {
   bucket = var.ecs_services[each.key].codepipeline_source_bucket_id
   key    = var.ecs_services[each.key].codepipeline_source_object_key
   source = data.archive_file.artifacts[each.key].output_path
-  etag   = filemd5(data.archive_file.artifacts[each.key].output_path)
+  source_hash = md5(jsonencode(data.archive_file.artifacts[each.key].source))
 }
 
 data "archive_file" "artifacts" {
