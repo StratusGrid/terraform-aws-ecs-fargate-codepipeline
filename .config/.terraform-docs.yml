@@ -178,8 +178,8 @@ content: |-
   
       codedeploy_role_arn              = "arn:aws:iam::123456789876:role/my_codedeploy_role"
       codedeploy_termination_wait_time = "5"
-      codebuild_auto_rollback_enabled  = true
-      codebuild_auto_rollback_events   = ["DEPLOYMENT_FAILURE"]
+      codedeploy_auto_rollback_enabled  = true
+      codedeploy_auto_rollback_events   = ["DEPLOYMENT_FAILURE"]
   
       codepipeline_role_arn        = "arn:aws:iam::123456789876:role/my_codepipeline_role"
       codepipeline_source_bucket_id  = "my_codepipeline_source_bucket_name"
@@ -211,7 +211,7 @@ content: |-
       taskdef_cpu    = 2048
       taskdef_memory = 4096
   
-      taskdef_container_definitions = <<-TASKDEF
+      initialization_container_definitions = <<-TASKDEF
         [
           {
             "name": "containername",

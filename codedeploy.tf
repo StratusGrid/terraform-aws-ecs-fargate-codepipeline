@@ -14,8 +14,8 @@ resource "aws_codedeploy_deployment_group" "this" {
   service_role_arn       = var.ecs_services[each.key].codedeploy_role_arn
 
   auto_rollback_configuration {
-    enabled = var.ecs_services[each.key].codebuild_auto_rollback_enabled
-    events  = var.ecs_services[each.key].codebuild_auto_rollback_events
+    enabled = var.ecs_services[each.key].codedeploy_auto_rollback_enabled
+    events  = var.ecs_services[each.key].codedeploy_auto_rollback_events
   }
 
   blue_green_deployment_config {

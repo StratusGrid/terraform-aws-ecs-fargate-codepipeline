@@ -1,10 +1,3 @@
-# # This is needed to import the taskdefinition json as a terraform map since aws_ecs_task_definition doesn't support json content
-# data "null_data_source" "this" {
-#   for_each = var.ecs_services
-
-#   inputs = jsondecode(var.ecs_services[each.key].task_definition)
-# }
-
 resource "aws_ecs_task_definition" "this" {
   for_each = var.ecs_services
 
@@ -18,7 +11,7 @@ resource "aws_ecs_task_definition" "this" {
 
   tags = merge(var.input_tags, {})
 
-  container_definitions = var.ecs_services[each.key].taskdef_container_definitions
+  container_definitions = var.ecs_services[each.key].initialization_container_definitions
 }
 
 resource "aws_ecs_service" "this" {
@@ -65,14 +58,7 @@ resource "aws_ecs_service" "this" {
   }
 
   health_check_grace_period_seconds = var.ecs_services[each.key].health_check_grace_period_seconds
-  #dynamic "load_balancer" {
-  #  for_each = var.ecs_services[each.key].lb_toggle
-  #  content {
-  #    target_group_arn = var.ecs_services[each.key].lb_target_group_blue_arn
-  #    container_name   = var.ecs_services[each.key].lb_container_name
-  #    container_port   = var.ecs_services[each.key].lb_container_port 
-  #  }
-  #}
+
   load_balancer {
     target_group_arn = var.ecs_services[each.key].lb_target_group_blue_arn
     container_name   = var.ecs_services[each.key].lb_container_name

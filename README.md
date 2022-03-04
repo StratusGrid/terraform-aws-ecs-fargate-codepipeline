@@ -1,3 +1,25 @@
+## Changes
+- Removed pipeline
+- Changed some variables to be more accurately named
+
+## TODO
+- Add in role creation that takes a policy and trusted account(s) it should allow to deploy the clusters
+- Add in other codedeploy strategies?
+- Pull out bucket creation so it can be centralized as needed? Otherwise, have the bucket trust the accounts you are trusting for codedeploy iam
+- Output a map that is everything needed for the codepipeline module
+
+## CodePipeline Module Inputs
+- Should take a map of environments with the following attributes
+  - environment name
+  - s3 bucket path
+    - bucket
+    - key for zip
+    - (optional) taskdef file name
+    - (optional) appspec file name
+  - iam role name
+  - codedeploy deployment group name
+  - manual approval(s)
+
 <!-- BEGIN_TF_DOCS -->
 # ecs-fargate-codepipeline
 
@@ -172,8 +194,8 @@ lb_container_port                 = 8080       # has to match port in container 
 
 codedeploy_role_arn              = "arn:aws:iam::123456789876:role/my_codedeploy_role"
 codedeploy_termination_wait_time = "5"
-codebuild_auto_rollback_enabled  = true
-codebuild_auto_rollback_events   = ["DEPLOYMENT_FAILURE"]
+codedeploy_auto_rollback_enabled  = true
+codedeploy_auto_rollback_events   = ["DEPLOYMENT_FAILURE"]
 
 codepipeline_role_arn        = "arn:aws:iam::123456789876:role/my_codepipeline_role"
 codepipeline_source_bucket_id  = "my_codepipeline_source_bucket_name"
@@ -205,7 +227,7 @@ taskdef_requires_compatibilities = [
 taskdef_cpu    = 2048
 taskdef_memory = 4096
 
-taskdef_container_definitions = <<-TASKDEF
+initialization_container_definitions = <<-TASKDEF
 [
 {
 "name": "containername",
@@ -279,7 +301,7 @@ postdeploy_codebuild_project_name = ["My_PostDeploy_Project"]
 |------|-------------|------|---------|:--------:|
 | <a name="input_codebuild_container_duplicator_name"></a> [codebuild\_container\_duplicator\_name](#input\_codebuild\_container\_duplicator\_name) | Optional variable to be provided when you are pushing containers to another repo after a successful code pipeline | `string` | `""` | no |
 | <a name="input_ecs_cluster_name"></a> [ecs\_cluster\_name](#input\_ecs\_cluster\_name) | name to be used for ecs cluster and base log group | `string` | n/a | yes |
-| <a name="input_ecs_services"></a> [ecs\_services](#input\_ecs\_services) | List of Maps containing all settings which are configured per task definition. | <pre>map(object(<br>    {<br>      service_name           = string<br>      platform_version       = string<br>      desired_count          = number<br>      security_groups        = list(string)<br>      subnets                = list(string)<br>      assign_public_ip       = bool<br>      propagate_tags         = string<br>      log_group_path         = string<br>      enable_execute_command = bool<br><br>      service_registries = map(string)<br><br>      use_custom_capacity_provider_strategy = bool<br>      custom_capacity_provider_strategy = map(string)<br><br>      health_check_grace_period_seconds = number<br><br>      lb_listener_prod_arn       = string<br>      lb_listener_test_arn       = string<br>      lb_target_group_blue_arn   = string<br>      lb_target_group_blue_name  = string<br>      lb_target_group_green_name = string<br>      lb_container_name          = string<br>      lb_container_port          = number<br><br>      codedeploy_role_arn              = string<br>      codedeploy_termination_wait_time = number<br>      codebuild_auto_rollback_enabled  = bool<br>      codebuild_auto_rollback_events   = list(string)<br><br>      codedepipeline_role_arn        = string<br>      codepipeline_source_bucket_id  = string<br>      codepipeline_source_object_key = string<br><br>      container_repo_name         = string<br>      container_target_tag        = string<br>      container_duplicate_targets = map(any) #This must have values for target_repo and target_account or an empty map<br>      deployment_manual_approval  = list(string)<br>      duplication_manual_approval = list(string)<br><br>      taskdef_family                   = string<br>      taskdef_execution_role_arn       = string<br>      taskdef_task_role_arn            = string<br>      taskdef_network_mode             = string<br>      taskdef_requires_compatibilities = list(string)<br>      taskdef_cpu                      = number<br>      taskdef_memory                   = number<br><br>      taskdef_container_definitions      = string<br>      codepipeline_container_definitions = string<br><br>      predeploy_codebuild_project_name  = list(string)<br>      postdeploy_codebuild_project_name = list(string)<br><br>      # task_definition = string<br>    }<br>  ))</pre> | n/a | yes |
+| <a name="input_ecs_services"></a> [ecs\_services](#input\_ecs\_services) | List of Maps containing all settings which are configured per task definition. | <pre>map(object(<br>    {<br>      service_name           = string<br>      platform_version       = string<br>      desired_count          = number<br>      security_groups        = list(string)<br>      subnets                = list(string)<br>      assign_public_ip       = bool<br>      propagate_tags         = string<br>      log_group_path         = string<br>      enable_execute_command = bool<br><br>      service_registries = map(string)<br><br>      use_custom_capacity_provider_strategy = bool<br>      custom_capacity_provider_strategy = map(string)<br><br>      health_check_grace_period_seconds = number<br><br>      lb_listener_prod_arn       = string<br>      lb_listener_test_arn       = string<br>      lb_target_group_blue_arn   = string<br>      lb_target_group_blue_name  = string<br>      lb_target_group_green_name = string<br>      lb_container_name          = string<br>      lb_container_port          = number<br><br>      codedeploy_role_arn              = string<br>      codedeploy_termination_wait_time = number<br>      codedeploy_auto_rollback_enabled  = bool<br>      codedeploy_auto_rollback_events   = list(string)<br><br>      codedepipeline_role_arn        = string<br>      codepipeline_source_bucket_id  = string<br>      codepipeline_source_object_key = string<br><br>      container_repo_name         = string<br>      container_target_tag        = string<br>      container_duplicate_targets = map(any) #This must have values for target_repo and target_account or an empty map<br>      deployment_manual_approval  = list(string)<br>      duplication_manual_approval = list(string)<br><br>      taskdef_family                   = string<br>      taskdef_execution_role_arn       = string<br>      taskdef_task_role_arn            = string<br>      taskdef_network_mode             = string<br>      taskdef_requires_compatibilities = list(string)<br>      taskdef_cpu                      = number<br>      taskdef_memory                   = number<br><br>      initialization_container_definitions      = string<br>      codepipeline_container_definitions = string<br><br>      predeploy_codebuild_project_name  = list(string)<br>      postdeploy_codebuild_project_name = list(string)<br><br>      # task_definition = string<br>    }<br>  ))</pre> | n/a | yes |
 | <a name="input_env_name"></a> [env\_name](#input\_env\_name) | name of environment/stage, passed in from root module | `string` | n/a | yes |
 | <a name="input_input_tags"></a> [input\_tags](#input\_input\_tags) | Map of tags to apply to resources | `map(string)` | <pre>{<br>  "Developer": "StratusGrid",<br>  "Provisioner": "Terraform"<br>}</pre> | no |
 | <a name="input_log_retention_days"></a> [log\_retention\_days](#input\_log\_retention\_days) | Number of days to retain logs for. Configured on Log Group which all log streams are put under. | `number` | n/a | yes |

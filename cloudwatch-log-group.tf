@@ -5,10 +5,6 @@ resource "aws_cloudwatch_log_group" "this" {
 
   retention_in_days = var.log_retention_days
 
-  # lifecycle {
-  #   prevent_destroy   = true
-  # }
-
   tags = merge(var.input_tags, {})
 }
 
