@@ -1,12 +1,17 @@
 ## Changes
 - Removed pipeline
 - Changed some variables to be more accurately named
+- Made log retention optional with a 30 day default
 
 ## TODO
+- Create this in our dev environment to help test.
 - Add in role creation that takes a policy and trusted account(s) it should allow to deploy the clusters
 - Add in other codedeploy strategies?
 - Pull out bucket creation so it can be centralized as needed? Otherwise, have the bucket trust the accounts you are trusting for codedeploy iam
 - Output a map that is everything needed for the codepipeline module
+- Add in better defaults functionality with the inputs file? https://www.terraform.io/language/functions/defaults
+- Update readme and examples
+- Move autoscaling into the module
 
 ## CodePipeline Module Inputs
 - Should take a map of environments with the following attributes
@@ -21,9 +26,11 @@
   - manual approval(s)
 
 <!-- BEGIN_TF_DOCS -->
-# ecs-fargate-codepipeline
+# ecs-fargate-cluster
 
-ecs-fargate-codepipeline creates an end to end fargate cluster with a single task (but can be multiple containers in the task), a CodeDeploy application deployment configuration, a CodePipeline to wrap around it, and all relevant iam roles etc.
+ecs-fargate-cluster creates a fargate cluster and as many services as needed with sizing, codedeploy, and scaling configurations.
+This module is meant to be used with a codepipeline module to allow for container images to be passed immutably from
+environment to environment within a contiguous pipeline without ever being duplicated etc. to other ECR repos.
 
 ### NOTE:
 

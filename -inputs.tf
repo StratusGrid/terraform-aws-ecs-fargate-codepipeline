@@ -3,11 +3,6 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
-variable "log_retention_days" {
-  description = "Number of days to retain logs for. Configured on Log Group which all log streams are put under."
-  type        = number
-}
-
 variable "vpc_id" {
   description = "VPC which all resources will be put into"
   type        = string
@@ -61,7 +56,6 @@ variable "ecs_services" {
       codepipeline_source_object_key = string
 
       container_repo_name         = string
-      container_target_tag        = string
 
       taskdef_family                   = string
       taskdef_execution_role_arn       = string
@@ -70,6 +64,7 @@ variable "ecs_services" {
       taskdef_requires_compatibilities = list(string)
       taskdef_cpu                      = number
       taskdef_memory                   = number
+      log_retention_days               = number
 
       initialization_container_definitions = string
       codepipeline_container_definitions   = string
