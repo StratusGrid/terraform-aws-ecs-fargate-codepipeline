@@ -20,7 +20,7 @@ variable "service_name" {
 variable "platform_version" {
   description = "ECS platform version to use"
   type        = string
-  default     = "LATEST"
+  default     = "1.4.0"
 }
 
 variable "desired_count" {
