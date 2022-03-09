@@ -213,3 +213,44 @@ variable "codepipeline_container_definitions" {
   description = "This is the template container definition which CodePipeline will interpolate and deploy the service with CodeDeploy."
   type        = string
 }
+
+variable "autoscaling_enabled" {
+  description = "Boolean to determine whether or not autoscaling should be configured for the service"
+  type        = bool
+  default     = true
+}
+
+variable "autoscaling_policy_type" {
+  description = "String value to select either the autoscaling policy type. Must be either TargetTrackingScaling or StepScaling"
+  type        = string
+  default     = "TargetTrackingScaling"
+}
+
+variable "scaling_min_capacity" {
+  description = "Minimum number of tasks that can be running at any time for the service"
+  type        = number
+  default     = 2
+}
+
+variable "scaling_max_capacity" {
+  description = "Maximum number of tasks that can be running at any time for the service"
+  type        = number
+  default     = 4
+}
+
+variable "scale_in_cooldown" {
+  description = "Number of seconds before scale in can happen after the last scale in operation. This should be long enough to allow your metric aggregation method and time adjust to the scale, setting it too low can result in excessive task churn."
+  type        = number
+  default     = 600
+}
+
+variable "scale_out_cooldown" {
+  description = "Number of seconds before scale out can happen after the last scale out operation. This should be long enough to allow your metric aggregation method and time adjust to the scale, setting it too low can result in excessive task churn."
+  type        = number
+  default     = 600
+}
+
+variable "scaling_predefined_metric_type" {}
+
+    target_value       = var.ecs_autoscaling_metric_target_value
+predefined_metric_type = "ECSServiceAverageCPUUtilization
