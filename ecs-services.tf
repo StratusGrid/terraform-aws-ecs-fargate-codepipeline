@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
 
   name             = var.service_name
-  cluster          = data.aws_ecs_cluster.this.arn
+  cluster          = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${var.ecs_cluster_name}"
   task_definition  = aws_ecs_task_definition.this.arn
   desired_count    = var.desired_count
   launch_type      = var.use_custom_capacity_provider_strategy == true ? null : "FARGATE"
@@ -32,14 +32,14 @@ resource "aws_ecs_service" "this" {
   enable_execute_command = var.enable_execute_command
 
   dynamic "service_registries" {
-    for_each = lookup(each.value, "service_registries", {})
+    for_each = var.service_registries
     content {
       registry_arn = service_registries.value
     }
   }
 
   dynamic "capacity_provider_strategy" {
-    for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
+    for_each = var.custom_capacity_provider_strategy
     content {
       base              = lookup(var.custom_capacity_provider_strategy, "primary_capacity_provider_base")
       capacity_provider = lookup(var.custom_capacity_provider_strategy, "primary_capacity_provider")
@@ -48,7 +48,7 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "capacity_provider_strategy" {
-    for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
+    for_each = var.custom_capacity_provider_strategy
     content {
       capacity_provider = lookup(var.custom_capacity_provider_strategy, "secondary_capacity_provider")
       weight            = lookup(var.custom_capacity_provider_strategy, "secondary_capacity_provider_weight")
