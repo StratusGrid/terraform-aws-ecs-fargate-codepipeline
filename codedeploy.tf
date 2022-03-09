@@ -1,21 +1,19 @@
 resource "aws_codedeploy_app" "this" {
-  for_each = var.ecs_services
 
   compute_platform = "ECS"
-  name             = var.ecs_services[each.key].service_name
+  name             = var.service_name
 }
 
 resource "aws_codedeploy_deployment_group" "this" {
-  for_each = var.ecs_services
 
-  app_name               = aws_codedeploy_app.this[each.key].name
+  app_name               = aws_codedeploy_app.this.name
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
-  deployment_group_name  = var.ecs_services[each.key].service_name
-  service_role_arn       = var.ecs_services[each.key].codedeploy_role_arn
+  deployment_group_name  = var.service_name
+  service_role_arn       = var.codedeploy_role_arn
 
   auto_rollback_configuration {
-    enabled = var.ecs_services[each.key].codedeploy_auto_rollback_enabled
-    events  = var.ecs_services[each.key].codedeploy_auto_rollback_events
+    enabled = var.codedeploy_auto_rollback_enabled
+    events  = var.codedeploy_auto_rollback_events
   }
 
   blue_green_deployment_config {
@@ -25,7 +23,7 @@ resource "aws_codedeploy_deployment_group" "this" {
 
     terminate_blue_instances_on_deployment_success {
       action                           = "TERMINATE"
-      termination_wait_time_in_minutes = var.ecs_services[each.key].codedeploy_termination_wait_time
+      termination_wait_time_in_minutes = var.codedeploy_termination_wait_time
     }
   }
 
@@ -35,25 +33,25 @@ resource "aws_codedeploy_deployment_group" "this" {
   }
 
   ecs_service {
-    cluster_name = aws_ecs_cluster.this.name
-    service_name = aws_ecs_service.this[each.key].name
+    cluster_name = var.ecs_cluster_name
+    service_name = aws_ecs_service.this.name
   }
 
   load_balancer_info {
     target_group_pair_info {
       prod_traffic_route {
-        listener_arns = [var.ecs_services[each.key].lb_listener_prod_arn]
+        listener_arns = [var.lb_listener_prod_arn]
       }
       test_traffic_route {
-        listener_arns = [var.ecs_services[each.key].lb_listener_test_arn]
+        listener_arns = [var.lb_listener_test_arn]
       }
 
       target_group {
-        name = var.ecs_services[each.key].lb_target_group_blue_name
+        name = var.lb_target_group_blue_name
       }
 
       target_group {
-        name = var.ecs_services[each.key].lb_target_group_green_name
+        name = var.lb_target_group_green_name
       }
     }
   }

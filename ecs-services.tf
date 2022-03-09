@@ -1,37 +1,35 @@
 resource "aws_ecs_task_definition" "this" {
-  for_each = var.ecs_services
 
-  family                   = var.ecs_services[each.key].taskdef_family
-  execution_role_arn       = var.ecs_services[each.key].taskdef_execution_role_arn
-  task_role_arn            = var.ecs_services[each.key].taskdef_task_role_arn
-  network_mode             = var.ecs_services[each.key].taskdef_network_mode
-  requires_compatibilities = var.ecs_services[each.key].taskdef_requires_compatibilities
-  cpu                      = var.ecs_services[each.key].taskdef_cpu
-  memory                   = var.ecs_services[each.key].taskdef_memory
+  family                   = var.taskdef_family
+  execution_role_arn       = var.taskdef_execution_role_arn
+  task_role_arn            = var.taskdef_task_role_arn
+  network_mode             = var.taskdef_network_mode
+  requires_compatibilities = var.taskdef_requires_compatibilities
+  cpu                      = var.taskdef_cpu
+  memory                   = var.taskdef_memory
 
   tags = merge(var.input_tags, {})
 
-  container_definitions = var.ecs_services[each.key].initialization_container_definitions
+  container_definitions = var.initialization_container_definitions
 }
 
 resource "aws_ecs_service" "this" {
-  for_each = var.ecs_services
 
-  name             = var.ecs_services[each.key].service_name
-  cluster          = aws_ecs_cluster.this.id
-  task_definition  = aws_ecs_task_definition.this[each.key].arn
-  desired_count    = var.ecs_services[each.key].desired_count
-  launch_type      = var.ecs_services[each.key].use_custom_capacity_provider_strategy == true ? null : "FARGATE"
-  platform_version = var.ecs_services[each.key].platform_version
-  propagate_tags   = var.ecs_services[each.key].propagate_tags
+  name             = var.service_name
+  cluster          = data.aws_ecs_cluster.this.arn
+  task_definition  = aws_ecs_task_definition.this.arn
+  desired_count    = var.desired_count
+  launch_type      = var.use_custom_capacity_provider_strategy == true ? null : "FARGATE"
+  platform_version = var.platform_version
+  propagate_tags   = var.propagate_tags
 
   network_configuration {
-    security_groups  = var.ecs_services[each.key].security_groups
-    subnets          = var.ecs_services[each.key].subnets
-    assign_public_ip = var.ecs_services[each.key].assign_public_ip
+    security_groups  = var.security_groups
+    subnets          = var.subnets
+    assign_public_ip = var.assign_public_ip
   }
 
-  enable_execute_command = var.ecs_services[each.key].enable_execute_command
+  enable_execute_command = var.enable_execute_command
 
   dynamic "service_registries" {
     for_each = lookup(each.value, "service_registries", {})
@@ -43,26 +41,26 @@ resource "aws_ecs_service" "this" {
   dynamic "capacity_provider_strategy" {
     for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
     content {
-      base              = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_base")
-      capacity_provider = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider")
-      weight            = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "primary_capacity_provider_weight")
+      base              = lookup(var.custom_capacity_provider_strategy, "primary_capacity_provider_base")
+      capacity_provider = lookup(var.custom_capacity_provider_strategy, "primary_capacity_provider")
+      weight            = lookup(var.custom_capacity_provider_strategy, "primary_capacity_provider_weight")
     }
   }
 
   dynamic "capacity_provider_strategy" {
     for_each = lookup(each.value, "custom_capacity_provider_strategy", {})
     content {
-      capacity_provider = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider")
-      weight            = lookup(var.ecs_services[each.key].custom_capacity_provider_strategy, "secondary_capacity_provider_weight")
+      capacity_provider = lookup(var.custom_capacity_provider_strategy, "secondary_capacity_provider")
+      weight            = lookup(var.custom_capacity_provider_strategy, "secondary_capacity_provider_weight")
     }
   }
 
-  health_check_grace_period_seconds = var.ecs_services[each.key].health_check_grace_period_seconds
+  health_check_grace_period_seconds = var.health_check_grace_period_seconds
 
   load_balancer {
-    target_group_arn = var.ecs_services[each.key].lb_target_group_blue_arn
-    container_name   = var.ecs_services[each.key].lb_container_name
-    container_port   = var.ecs_services[each.key].lb_container_port
+    target_group_arn = var.lb_target_group_blue_arn
+    container_name   = var.lb_container_name
+    container_port   = var.lb_container_port
   }
 
   deployment_controller {

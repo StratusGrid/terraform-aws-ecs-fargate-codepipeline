@@ -12,6 +12,7 @@
 - Add in better defaults functionality with the inputs file? https://www.terraform.io/language/functions/defaults
 - Update readme and examples
 - Move autoscaling into the module
+- Add container insights
 
 ## CodePipeline Module Inputs
 - Should take a map of environments with the following attributes
