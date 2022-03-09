@@ -83,6 +83,7 @@ variable "custom_capacity_provider_strategy" {
 variable "health_check_grace_period_seconds" {
   description = "Number of seconds before a failing healthcheck on a new ecs task will kill the task"
   type        = number
+  default     = 60
 }
 
 variable "lb_listener_prod_arn" {
@@ -155,11 +156,6 @@ variable "codepipeline_source_bucket_id" {
 
 variable "codepipeline_source_object_key" {
   description = "Key for zip file inside of S3 bucket whhich CodePipeline pulls in as a source stage.  Must be reachable by principal applying TF and the CodeDeploy Group role."
-  type        = string
-}
-
-variable "container_repo_name" {
-  description = "Name of ECR repository to deploy the image from"
   type        = string
 }
 
