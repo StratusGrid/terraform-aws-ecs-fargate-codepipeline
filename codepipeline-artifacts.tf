@@ -8,13 +8,18 @@ resource "aws_s3_bucket_object" "artifacts_s3" {
   source_hash = md5(jsonencode(data.archive_file.artifacts.source))
 }
 
+locals {
+  artifact_taskdef_file_name = "taskdef.json"
+  artifact_appspec_file_name = "appspec.yaml"
+}
+
 data "archive_file" "artifacts" {
 
   type        = "zip"
   output_path = "${path.module}/dist/${var.service_name}-artifacts.zip"
 
   source {
-    filename = "taskdef.json"
+    filename = local.artifact_taskdef_file_name
     content  = <<EOF
 {
   "family": "${var.taskdef_family}",
@@ -36,7 +41,7 @@ EOF
   dynamic source {
     for_each = var.use_custom_capacity_provider_strategy == true ? [1] : []
     content {
-      filename = "appspec.yaml"
+      filename = local.artifact_appspec_file_name
       content = <<-EOF
       version: 0.0
       Resources:
@@ -61,7 +66,7 @@ EOF
   dynamic source {
     for_each = var.use_custom_capacity_provider_strategy == false ? [1] : []
     content {
-      filename = "appspec.yaml"
+      filename = local.artifact_appspec_file_name
       content = <<-EOF
       version: 0.0
       Resources:

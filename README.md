@@ -2,29 +2,34 @@
 - Removed pipeline
 - Changed some variables to be more accurately named
 - Made log retention optional with a 30 day default
+- Moved cluster code out of module
+- Enabled Container Insights on the cluster
+- Flattened the module so it wasn't using objects nested in maps and for_each so we can for_each in the root module instead
+- Move CodeDeploy role into module
+
+## DONE
+- Create this in our dev environment to help test.
 
 ## TODO
-- Create this in our dev environment to help test.
 - Add in role creation that takes a policy and trusted account(s) it should allow to deploy the clusters
-- Add in other codedeploy strategies?
-- Pull out bucket creation so it can be centralized as needed? Otherwise, have the bucket trust the accounts you are trusting for codedeploy iam
 - Output a map that is everything needed for the codepipeline module
-- Add in better defaults functionality with the inputs file? https://www.terraform.io/language/functions/defaults
-- Update readme and examples
 - Move autoscaling into the module
-- Add container insights
+- Update readme and examples
+
+## MAYBE TODO
+- Add in other codedeploy strategies?
 
 ## CodePipeline Module Inputs
 - Should take a map of environments with the following attributes
-  - environment name
+  - environment name (key for map)
   - s3 bucket path
     - bucket
     - key for zip
     - (optional) taskdef file name
     - (optional) appspec file name
-  - iam role name
+  - codepipeline assumable iam role name
   - codedeploy deployment group name
-  - manual approval(s)
+
 
 <!-- BEGIN_TF_DOCS -->
 # ecs-fargate-cluster

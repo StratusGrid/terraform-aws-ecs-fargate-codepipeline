@@ -14,3 +14,26 @@
 //    for k, service in aws_codedeploy_app.this : k => service.arn
 //  })
 //}
+
+output "codepipeline_variables" {
+  description = "Map for values needed for CodePipeline to do deploys on this service"
+  value = {
+    artifact_bucket = var.codepipeline_source_bucket_id
+    artifact_key = var.codepipeline_source_object_key
+    artifact_taskdef_file_name = local.artifact_taskdef_file_name
+    artifact_appspec_file_name = local.artifact_appspec_file_name
+    codedeploy_deployment_group_arn  = aws_codedeploy_deployment_group.this.arn
+    codedeploy_deployment_group_name = aws_codedeploy_deployment_group.this.id
+  }
+}
+
+//## CodePipeline Module Inputs
+//- Should take a map of environments with the following attributes
+//  - environment name (key for map)
+//  - s3 bucket path
+//    - bucket
+//    - key for zip
+//    - (optional) taskdef file name
+//    - (optional) appspec file name
+//  - codepipeline assumable iam role name
+//  - codedeploy deployment group name

@@ -120,9 +120,10 @@ variable "lb_container_port" {
   type        = number
 }
 
-variable "codedeploy_role_arn" {
-  description = "IAM Role associated to CodeDeploy Deployment Group to provide permissions for CodeDeploy actions"
-  type        = string
+variable "codedeploy_role_additional_policies" {
+  description = "Map of additional policies to attach to the CodeDeploy role. Should be formatted as {key = arn}"
+  type        = map(string)
+  default     = {}
 }
 
 variable "codedeploy_termination_wait_time" {
@@ -148,12 +149,12 @@ variable "codedeploy_auto_rollback_events" {
 }
 
 variable "codepipeline_source_bucket_id" {
-  description = "S3 bucket where the output artifact zip should be placed (appspec and task definition) to be pulled into pipeline as a source"
+  description = "S3 bucket where the output artifact zip should be placed (appspec and task definition) to be pulled into pipeline as a source. Must be reachable by principal applying TF and the CodeDeploy Group role."
   type        = string
 }
 
 variable "codepipeline_source_object_key" {
-  description = "Key for zip file inside of S3 bucket whhich CodePipeline pulls in as a source stage"
+  description = "Key for zip file inside of S3 bucket whhich CodePipeline pulls in as a source stage.  Must be reachable by principal applying TF and the CodeDeploy Group role."
   type        = string
 }
 
