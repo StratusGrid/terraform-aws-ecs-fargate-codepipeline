@@ -18,6 +18,7 @@
 output "codepipeline_variables" {
   description = "Map for values needed for CodePipeline to do deploys on this service"
   value = {
+    aws_account_number               = data.aws_caller_identity.current.account_id
     artifact_bucket                  = var.codepipeline_source_bucket_id
     artifact_key                     = var.codepipeline_source_object_key
     artifact_taskdef_file_name       = local.artifact_taskdef_file_name
