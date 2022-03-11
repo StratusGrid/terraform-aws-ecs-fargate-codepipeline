@@ -33,7 +33,7 @@ resource "aws_iam_role_policy" "this_codedeploy" {
       "Version" = "2012-10-17"
       "Statement" = [
         {
-          "Action" = [
+          Action = [
             "ecs:DescribeServices",
             "ecs:CreateTaskSet",
             "ecs:UpdateServicePrimaryTaskSet",
@@ -49,16 +49,16 @@ resource "aws_iam_role_policy" "this_codedeploy" {
             "s3:GetObject",
             "s3:GetObjectVersion"
           ],
-          "Resource" = "*",
-          "Effect"   = "Allow"
+          Resource = "*",
+          Effect   = "Allow"
         },
         {
-          "Action" = [
+          Action = [
             "iam:PassRole"
           ],
-          "Effect"   = "Allow",
-          "Resource" = "*",
-          "Condition" = {
+          Effect   = "Allow",
+          Resource = "*",
+          Condition = {
             "StringLike" = {
               "iam:PassedToService" = [
                 "ecs-tasks.amazonaws.com"
