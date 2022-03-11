@@ -2,9 +2,9 @@
 
 resource "aws_s3_bucket_object" "artifacts_s3" {
 
-  bucket = var.codepipeline_source_bucket_id
-  key    = var.codepipeline_source_object_key
-  source = data.archive_file.artifacts.output_path
+  bucket      = var.codepipeline_source_bucket_id
+  key         = var.codepipeline_source_object_key
+  source      = data.archive_file.artifacts.output_path
   source_hash = md5(jsonencode(data.archive_file.artifacts.source))
 }
 
@@ -38,11 +38,11 @@ data "archive_file" "artifacts" {
 EOF
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.use_custom_capacity_provider_strategy == true ? [1] : []
     content {
       filename = local.artifact_appspec_file_name
-      content = <<-EOF
+      content  = <<-EOF
       version: 0.0
       Resources:
         - TargetService:
@@ -63,11 +63,11 @@ EOF
     }
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.use_custom_capacity_provider_strategy == false ? [1] : []
     content {
       filename = local.artifact_appspec_file_name
-      content = <<-EOF
+      content  = <<-EOF
       version: 0.0
       Resources:
         - TargetService:

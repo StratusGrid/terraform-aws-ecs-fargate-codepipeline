@@ -157,7 +157,7 @@ variable "codedeploy_auto_rollback_enabled" {
 variable "codedeploy_auto_rollback_events" {
   description = "CodeDeploy rollback events which will trigger an automatic rollback"
   type        = list(string)
-  default     = [
+  default = [
     "DEPLOYMENT_FAILURE",
     "DEPLOYMENT_STOP_ON_ALARM",
     "DEPLOYMENT_STOP_ON_REQUEST"
@@ -198,7 +198,7 @@ variable "taskdef_network_mode" {
 variable "taskdef_requires_compatibilities" {
   description = "ECS compatibilities to help determine task placement"
   type        = list(string)
-  default     = [
+  default = [
     "FARGATE"
   ]
 }
