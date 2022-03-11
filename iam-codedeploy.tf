@@ -46,10 +46,18 @@ resource "aws_iam_role_policy" "this_codedeploy" {
             "lambda:InvokeFunction",
             "cloudwatch:DescribeAlarms",
             "sns:Publish",
+//            "s3:GetObject",
+//            "s3:GetObjectVersion"
+          ],
+          Resource = "*",
+          Effect   = "Allow"
+        },
+        {
+          Action = [
             "s3:GetObject",
             "s3:GetObjectVersion"
           ],
-          Resource = "*",
+          Resource = "arn:aws:s3:::${var.codepipeline_source_bucket_id}/${var.codepipeline_source_object_key}",
           Effect   = "Allow"
         },
         {

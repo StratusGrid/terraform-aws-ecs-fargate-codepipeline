@@ -159,6 +159,11 @@ variable "codepipeline_source_bucket_id" {
   type        = string
 }
 
+variable "codepipeline_source_bucket_kms_key_id" {
+  description = "The KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. If referencing the aws_kms_key resource, use the arn attribute. If referencing the aws_kms_alias data source or resource, use the target_key_arn attribute."
+  type        = string
+}
+
 variable "codepipeline_source_object_key" {
   description = "Key for zip file inside of S3 bucket whhich CodePipeline pulls in as a source stage.  Must be reachable by principal applying TF and the CodeDeploy Group role."
   type        = string
