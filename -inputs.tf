@@ -7,8 +7,8 @@ variable "input_tags" {
   }
 }
 
-variable "cicd_aws_pipeline_account_number" {
-  description = "12-digit AWS account number of the account which runs the deployment pipeline. String type for use in IAM policy."
+variable "cicd_account_number" {
+  description = "12-digit AWS account number for the account which calls the CodeDeploy Deployment Group. This can be used to allow the CodeDeploy to be triggered from another account. String type for use in IAM policy."
   type        = string
 }
 

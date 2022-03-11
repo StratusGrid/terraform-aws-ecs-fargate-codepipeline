@@ -11,6 +11,7 @@
 - Create this in our dev environment to help test.
 
 ## TODO
+- Remove KMS and S3 code from this module if it is not needed for cross account deploy
 - Add in role creation for codepipeline if needed that takes a policy and trusted account(s) it should allow to deploy the clusters
 - Output a map that is everything needed for the codepipeline module
 - Move autoscaling into the module
