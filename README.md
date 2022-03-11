@@ -12,6 +12,7 @@
 
 ## TODO
 - Remove KMS and S3 code from this module if it is not needed for cross account deploy
+- Have the iam-cicd-account iam resources be optional and default to not creating via count
 - Add in role creation for codepipeline if needed that takes a policy and trusted account(s) it should allow to deploy the clusters
 - Output a map that is everything needed for the codepipeline module
 - Move autoscaling into the module

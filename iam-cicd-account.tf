@@ -1,4 +1,6 @@
 resource "aws_iam_role" "cicd_account_role" {
+  name = "${var.service_name}-cicd"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

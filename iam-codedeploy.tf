@@ -65,38 +65,6 @@ resource "aws_iam_role_policy" "this_codedeploy" {
               ]
             }
           }
-        },
-        {
-          Sid    = "CrossAccountBucketAccess"
-          Effect = "Allow"
-          Actions = [
-            "s3:Get*"
-          ]
-          Resources = [
-            "${data.aws_s3_bucket.cicd_artifacts.arn}/*"
-          ]
-        },
-        {
-          Sid     = "CrossAccountBucketListAccess"
-          Effect  = "Allow"
-          Actions = ["s3:ListBucket"]
-          Resources = [
-            data.aws_s3_bucket.cicd_artifacts.arn
-          ]
-        },
-        {
-          Sid    = "CrossAccountKMSAccess"
-          Effect = "Allow"
-          Actions = [
-            "kms:DescribeKey",
-            "kms:GenerateDataKey*",
-            "kms:Encrypt",
-            "kms:ReEncrypt*",
-            "kms:Decrypt"
-          ]
-          Resources = [
-            data.aws_kms_key.cicd_encryption_key.arn
-          ]
         }
       ]
   })

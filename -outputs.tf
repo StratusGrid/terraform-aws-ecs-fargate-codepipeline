@@ -24,6 +24,7 @@ output "codepipeline_variables" {
     artifact_appspec_file_name       = local.artifact_appspec_file_name
     codedeploy_deployment_group_arn  = aws_codedeploy_deployment_group.this.arn
     codedeploy_deployment_group_name = aws_codedeploy_deployment_group.this.id
+    cicd_account_role                = aws_iam_role.cicd_account_role.arn
   }
 }
 

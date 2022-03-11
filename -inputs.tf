@@ -12,16 +12,6 @@ variable "cicd_account_number" {
   type        = string
 }
 
-variable "cicd_artifact_bucket_name" {
-  description = "Name of the Bucket in CICD which holds all related source, task and pipeline artifacts."
-  type        = string
-}
-
-variable "cicd_kms_encryption_key_arn" {
-  description = "ID of the KMS key used to encrypt objects in the CICD artifacts bucket."
-  type        = string
-}
-
 variable "ecs_cluster_name" {
   description = "Name of the ECS cluster to deploy the service to"
   type        = string
