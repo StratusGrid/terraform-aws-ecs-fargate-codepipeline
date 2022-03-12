@@ -55,7 +55,7 @@ codepipeline_variables = {
 | <a name="input_codedeploy_termination_wait_time"></a> [codedeploy\_termination\_wait\_time](#input\_codedeploy\_termination\_wait\_time) | Wait time in seconds for CodeDeploy to wait before terminating previous production tasks after redirecting traffic to the new tasks | `number` | `300` | no |
 | <a name="input_codepipeline_container_definitions"></a> [codepipeline\_container\_definitions](#input\_codepipeline\_container\_definitions) | This is the template container definition which CodePipeline will interpolate and deploy the service with CodeDeploy. | `string` | n/a | yes |
 | <a name="input_codepipeline_source_bucket_id"></a> [codepipeline\_source\_bucket\_id](#input\_codepipeline\_source\_bucket\_id) | S3 bucket where the output artifact zip should be placed (appspec and task definition) to be pulled into pipeline as a source. Must be reachable by principal applying TF and the CodeDeploy Group role. | `string` | n/a | yes |
-| <a name="input_codepipeline_source_bucket_kms_key_arn"></a> [codepipeline\_source\_bucket\_kms\_key\_arn](#input\_codepipeline\_source\_bucket\_kms\_key\_arn) | ARN of the KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. If referencing the aws\_kms\_key resource, use the arn attribute. If referencing the aws\_kms\_alias data source or resource, use the target\_key\_arn attribute. | `string` | n/a | yes |
+| <a name="input_codepipeline_source_bucket_kms_key_arn"></a> [codepipeline\_source\_bucket\_kms\_key\_arn](#input\_codepipeline\_source\_bucket\_kms\_key\_arn) | ARN of the KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. This KMS key should be the same for all services which are deployed from a single contiguous CodePipeline because CodePipeline needs a single KMS key to use for all artifacts across all Actions. If referencing the aws\_kms\_key resource, use the arn attribute. If referencing the aws\_kms\_alias data source or resource, use the target\_key\_arn attribute. | `string` | n/a | yes |
 | <a name="input_codepipeline_source_object_key"></a> [codepipeline\_source\_object\_key](#input\_codepipeline\_source\_object\_key) | Key for zip file inside of S3 bucket whhich CodePipeline pulls in as a source stage.  Must be reachable by principal applying TF and the CodeDeploy Group role. | `string` | n/a | yes |
 | <a name="input_custom_capacity_provider_strategy"></a> [custom\_capacity\_provider\_strategy](#input\_custom\_capacity\_provider\_strategy) | Map to define the custom capacity provider strategy for the service. This would be used to utilize Fargate Spot for instance. | `map(string)` | `{}` | no |
 | <a name="input_desired_count"></a> [desired\_count](#input\_desired\_count) | Number of tasks to run before autoscaling changes | `number` | `2` | no |
@@ -94,17 +94,6 @@ codepipeline_variables = {
 | Name | Description |
 |------|-------------|
 | <a name="output_codepipeline_variables"></a> [codepipeline\_variables](#output\_codepipeline\_variables) | Map for values needed for CodePipeline to do deploys on this service |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-## Requirements
-
-No requirements.
 
 ---
 

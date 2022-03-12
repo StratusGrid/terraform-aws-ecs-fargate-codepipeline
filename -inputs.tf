@@ -160,7 +160,7 @@ variable "codepipeline_source_bucket_id" {
 }
 
 variable "codepipeline_source_bucket_kms_key_arn" {
-  description = "ARN of the KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. If referencing the aws_kms_key resource, use the arn attribute. If referencing the aws_kms_alias data source or resource, use the target_key_arn attribute."
+  description = "ARN of the KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. This KMS key should be the same for all services which are deployed from a single contiguous CodePipeline because CodePipeline needs a single KMS key to use for all artifacts across all Actions. If referencing the aws_kms_key resource, use the arn attribute. If referencing the aws_kms_alias data source or resource, use the target_key_arn attribute."
   type        = string
 }
 
