@@ -21,23 +21,13 @@ output "codepipeline_variables" {
     aws_account_number               = data.aws_caller_identity.current.account_id
     artifact_bucket                  = var.codepipeline_source_bucket_id
     artifact_key                     = var.codepipeline_source_object_key
+    artifact_kms_key_arn             = var.codepipeline_source_bucket_kms_key_arn
     artifact_taskdef_file_name       = local.artifact_taskdef_file_name
     artifact_appspec_file_name       = local.artifact_appspec_file_name
     codedeploy_deployment_group_arn  = aws_codedeploy_deployment_group.this.arn
     codedeploy_deployment_group_name = aws_codedeploy_deployment_group.this.app_name
-    codedeploy_deployment_app_arn   = aws_codedeploy_app.this.arn
+    codedeploy_deployment_app_arn    = aws_codedeploy_app.this.arn
     codedeploy_deployment_app_name   = aws_codedeploy_app.this.name
-    cicd_account_role                = aws_iam_role.cicd_account_role.arn
+    trusting_account_role            = aws_iam_role.cicd_account_role.arn
   }
 }
-
-//## CodePipeline Module Inputs
-//- Should take a map of environments with the following attributes
-//  - environment name (key for map)
-//  - s3 bucket path
-//    - bucket
-//    - key for zip
-//    - (optional) taskdef file name
-//    - (optional) appspec file name
-//  - codepipeline assumable iam role name
-//  - codedeploy deployment group name

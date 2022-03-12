@@ -7,7 +7,7 @@ resource "aws_s3_bucket_object" "artifacts_s3" {
   source      = data.archive_file.artifacts.output_path
   source_hash = md5(jsonencode(data.archive_file.artifacts.source))
   acl         = "bucket-owner-full-control"
-  kms_key_id  = var.codepipeline_source_bucket_kms_key_id
+  kms_key_id  = var.codepipeline_source_bucket_kms_key_arn
 }
 
 locals {

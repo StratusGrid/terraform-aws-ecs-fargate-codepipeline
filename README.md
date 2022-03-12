@@ -13,8 +13,6 @@
 ## TODO
 - Potentially make the kms key optional to better support same account options with less inputs?
 - Have the iam-cicd-account iam resources be optional and default to not creating via count
-- Add in role creation for codepipeline if needed that takes a policy and trusted account(s) it should allow to deploy the clusters
-- Output a map that is everything needed for the codepipeline module
 - Move autoscaling into the module
   /* to add autoscaling to module, I would:
 - Move the appautoscaling target and policy into the module

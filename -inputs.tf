@@ -7,9 +7,9 @@ variable "input_tags" {
   }
 }
 
-variable "cicd_account_number" {
-  description = "12-digit AWS account number for the account which calls the CodeDeploy Deployment Group. This can be used to allow the CodeDeploy to be triggered from another account. String type for use in IAM policy."
-  type        = string
+variable "trusted_account_numbers" {
+  description = "List of 12-digit AWS account numbers which can assume the IAM Role which has rights to trigger the CodeDeploy Deployment. This can be used to allow the CodeDeploy to be triggered from another account(s). String type for use in IAM policy."
+  type        = list(string)
 }
 
 variable "ecs_cluster_name" {
@@ -159,8 +159,8 @@ variable "codepipeline_source_bucket_id" {
   type        = string
 }
 
-variable "codepipeline_source_bucket_kms_key_id" {
-  description = "The KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. If referencing the aws_kms_key resource, use the arn attribute. If referencing the aws_kms_alias data source or resource, use the target_key_arn attribute."
+variable "codepipeline_source_bucket_kms_key_arn" {
+  description = "ARN of the KMS key used to encrypt objects in the bucket used to store and retrieve artifacts for the codepipeline. If referencing the aws_kms_key resource, use the arn attribute. If referencing the aws_kms_alias data source or resource, use the target_key_arn attribute."
   type        = string
 }
 
