@@ -21,6 +21,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = var.ecs_services[each.key].taskdef_container_definitions
 }
 
+#tflint-ignore: terraform_required_providers -- Ignore warning on version constraint
 resource "aws_ecs_service" "this" {
   for_each = var.ecs_services
 
