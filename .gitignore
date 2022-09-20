@@ -29,3 +29,7 @@ override.tf.json
 # example: *tfplan*
 
 dist/*
+
+.pre-commit-config.yaml
+.prettierignore
+

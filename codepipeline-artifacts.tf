@@ -36,7 +36,7 @@ data "archive_file" "artifacts" {
 EOF
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == true ? [1] : []
     content {
       filename = "appspec.yaml"
@@ -61,7 +61,7 @@ EOF
     }
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == false ? [1] : []
     content {
       filename = "appspec.yaml"

@@ -1,0 +1,8 @@
+name: Pre-Commit
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    uses: StratusGrid/workflow-config/.github/workflows/pre-commit.yml@main
