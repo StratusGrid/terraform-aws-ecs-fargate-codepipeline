@@ -5,6 +5,18 @@
 *.tfstate
 *.tfstate.*
 
+# Lock File
+.terraform.lock.**
+
+#TF Hash Lock File - Module Specific
+.terraform.lock.hcl
+
+# Mac Stuff
+.DS_Store
+
+# InfraCost
+**/.infracost/*
+
 # Crash log files
 crash.log
 
@@ -28,8 +40,9 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
-dist/*
+# IntelliJ
+.idea/workspace.xml
+.idea
 
 .pre-commit-config.yaml
 .prettierignore
-
