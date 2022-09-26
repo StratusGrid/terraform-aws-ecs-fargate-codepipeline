@@ -3,12 +3,13 @@
 resource "aws_s3_bucket_object" "artifacts_s3" {
   for_each = var.ecs_services
 
-  bucket = var.ecs_services[each.key].codepipeline_source_bucket_id
-  key    = var.ecs_services[each.key].codepipeline_source_object_key
-  source = data.archive_file.artifacts[each.key].output_path
+  bucket      = var.ecs_services[each.key].codepipeline_source_bucket_id
+  key         = var.ecs_services[each.key].codepipeline_source_object_key
+  source      = data.archive_file.artifacts[each.key].output_path
   source_hash = md5(jsonencode(data.archive_file.artifacts[each.key].source))
 }
 
+#tflint-ignore: terraform_required_providers -- Ignore warning on version constraint
 data "archive_file" "artifacts" {
   for_each = var.ecs_services
 
@@ -35,11 +36,11 @@ data "archive_file" "artifacts" {
 EOF
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == true ? [1] : []
     content {
       filename = "appspec.yaml"
-      content = <<-EOF
+      content  = <<-EOF
       version: 0.0
       Resources:
         - TargetService:
@@ -60,11 +61,11 @@ EOF
     }
   }
 
-  dynamic source {
+  dynamic "source" {
     for_each = var.ecs_services[each.key].use_custom_capacity_provider_strategy == false ? [1] : []
     content {
       filename = "appspec.yaml"
-      content = <<-EOF
+      content  = <<-EOF
       version: 0.0
       Resources:
         - TargetService:

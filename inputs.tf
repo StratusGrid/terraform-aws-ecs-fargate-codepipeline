@@ -13,6 +13,7 @@ variable "log_retention_days" {
   type        = number
 }
 
+#tflint-ignore: terraform_unused_declarations  -- Ignores warning about unused resources
 variable "vpc_id" {
   description = "VPC which all resources will be put into"
   type        = string
@@ -27,6 +28,7 @@ variable "input_tags" {
   }
 }
 
+#tflint-ignore: terraform_unused_declarations  -- Ignores warning about unused resources
 variable "termination_wait_time" {
   description = "Deprecated. Use codedeploy_termination_wait_time in the ecs_services object instead."
   type        = number
@@ -56,7 +58,7 @@ variable "ecs_services" {
       service_registries = map(string)
 
       use_custom_capacity_provider_strategy = bool
-      custom_capacity_provider_strategy = map(string)
+      custom_capacity_provider_strategy     = map(string)
 
       health_check_grace_period_seconds = number
 
