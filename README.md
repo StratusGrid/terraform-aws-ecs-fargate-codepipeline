@@ -1,5 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# ecs-fargate-codepipeline
+# terraform-aws-ecs-fargate-codepipeline
+
+GitHub: [StratusGrid/terraform-aws-ecs-fargate-codepipeline](https://github.com/StratusGrid/terraform-aws-ecs-fargate-codepipeline)
 
 This module creates an end-to-end fargate cluster with a single task (but can be multiple containers in the task), a CodeDeploy application deployment configuration, a CodePipeline to wrap around it, and all relevant iam roles etc.
 
