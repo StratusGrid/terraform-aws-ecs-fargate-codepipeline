@@ -1,0 +1,43 @@
+module "ecs_app_iam_role" {
+  source  = "StratusGrid/ecs-iam-role-builder/aws"
+  version = "~> 1.0"
+  # source  = "github.com/GenesisFunction/terraform-aws-ecs-iam-role-builder"
+  # source = "./modules/ecs-iam-role-builder"
+
+  cloudwatch_logs_policy     = true
+  cloudwatch_logs_group_path = module.ecs_fargate_app.log_group_path
+
+  ecr_policy = true
+  ecr_repos  = [
+    aws_ecr_repository.app.arn
+  ]
+
+  custom_policy_jsons = [data.aws_iam_policy_document.bucket_access.json, data.aws_iam_policy_document.ssm_parameters.json]
+  
+  role_name  = "${var.name_prefix}-app${local.name_suffix}"
+  input_tags = merge(local.common_tags, {})
+}
+
+
+resource "aws_service_discovery_private_dns_namespace" "discovery_namespace" {
+  name        = "discovery.${var.env_name}.mydomain.com"
+  description = "My services ${var.env_name} discovery namespace"
+  vpc         = data.aws_vpc.vpc_microservices.id
+
+  tags = merge(local.common_tags, {})
+}
+
+resource "aws_service_discovery_service" "discovery_service" {
+  name = "myapp"
+
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.discovery_namespace.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+
+  tags = merge(local.common_tags, {})
+}

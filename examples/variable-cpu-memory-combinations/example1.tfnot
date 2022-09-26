@@ -1,0 +1,77 @@
+module "ecs_fargate_app" {
+  source  = "StratusGrid/ecs-fargate-codepipeline/aws"
+  version = "~> 0.1"
+  # source  = "github.com/StratusGrid/terraform-aws-ecs-fargate-codepipeline"
+
+  ecs_cluster_name   = "${var.name_prefix}-app${local.name_suffix}"
+  log_retention_days = 30
+  vpc_id             = data.aws_vpc.vpc_microservices.id
+
+  input_tags = merge(local.common_tags, {})
+
+  task_definitions = [
+    {
+      # task definition configs
+      task_name   = "app"
+      task_cpu    = 256
+      task_memory = 512
+
+      execution_role_arn = module.ecs_app_iam_role.iam_role_arn
+
+      # service configs
+      platform_version = "1.3.0"
+      desired_count    = 1
+      security_groups  = [aws_security_group.admin.id]
+      subnets          = data.aws_subnet_ids.public_subnets
+      assign_public_ip = true
+      propagate_tags   = "TASK_DEFINITION"
+      log_group_path   = local.sso_service_log_group_a
+      enable_execute_command = false
+
+      service_registries = { // only accepts a single block
+        registry_arn = aws_service_discovery_service.discovery_service.arn
+      }
+
+      # load balancer configs
+      health_check_grace_period_seconds = 10
+
+      lb_target_group_arn = aws_lb_target_group.data_hub_web_http_api.arn
+      lb_container_name   = "app"
+      lb_container_port   = 3001
+
+      # container configs in task definition
+      container_definitions = <<DEFINITION
+        [
+          {
+            "name": "app",
+            "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/app-dev:latest",
+            "essential": true,
+            "cpu": 256,
+            "memory": 512,
+            "memoryReservation": 512,
+            "secrets": [
+              {"name": "pgdatabase","valueFrom": "${aws_ssm_parameter.data_hub_pgdatabase.arn}"},
+              {"name": "pguser","valueFrom": "${aws_ssm_parameter.data_hub_pguser.arn}"},
+              {"name": "pgpassword","valueFrom": "${aws_ssm_parameter.data_hub_pgpassword.arn}"},
+            ],
+            "environment": [],
+            "portMappings": [
+              {
+                "containerPort": 3001,
+                "hostPort": 3001
+              }
+            ],
+            "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                "awslogs-group": "${module.ecs_fargate_app.log_group_path}",
+                "awslogs-region": "${data.aws_region.current.name}",
+                "awslogs-stream-prefix": "ecs"
+                }
+            }
+          }
+        ]
+        DEFINITION
+    }
+  ]
+}
