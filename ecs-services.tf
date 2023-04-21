@@ -16,7 +16,7 @@ resource "aws_ecs_task_definition" "this" {
   cpu                      = var.ecs_services[each.key].taskdef_cpu
   memory                   = var.ecs_services[each.key].taskdef_memory
 
-  dynamic volume {
+  dynamic "volume" {
     for_each = var.ecs_services[each.key].efs_volume
 
     content {
