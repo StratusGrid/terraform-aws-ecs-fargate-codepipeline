@@ -99,6 +99,8 @@ variable "ecs_services" {
       predeploy_codebuild_project_name  = list(string)
       postdeploy_codebuild_project_name = list(string)
 
+      efs_volume = map(string)
+
       # task_definition = string
     }
   ))
