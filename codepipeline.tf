@@ -4,7 +4,7 @@ resource "aws_codepipeline" "this" {
   tags = var.input_tags
 
   name     = var.ecs_services[each.key].service_name
-  role_arn = var.ecs_services[each.key].codedepipeline_role_arn
+  role_arn = var.ecs_services[each.key].codepipeline_role_arn
 
   artifact_store {
     location = aws_s3_bucket_object.artifacts_s3[each.key].bucket
