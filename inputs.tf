@@ -75,7 +75,7 @@ variable "ecs_services" {
       codebuild_auto_rollback_enabled  = bool
       codebuild_auto_rollback_events   = list(string)
 
-      codedepipeline_role_arn        = string
+      codepipeline_role_arn          = string
       codepipeline_source_bucket_id  = string
       codepipeline_source_object_key = string
 
@@ -98,6 +98,8 @@ variable "ecs_services" {
 
       predeploy_codebuild_project_name  = list(string)
       postdeploy_codebuild_project_name = list(string)
+
+      efs_volume = map(string)
 
       # task_definition = string
     }

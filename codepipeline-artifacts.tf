@@ -31,6 +31,7 @@ data "archive_file" "artifacts" {
   ],
   "requiresCompatibilities": ${jsonencode(var.ecs_services[each.key].taskdef_requires_compatibilities)},
   "networkMode": "${var.ecs_services[each.key].taskdef_network_mode}",
+  "volumes": ${jsonencode(aws_ecs_task_definition.this[each.key].volume)},
   "containerDefinitions": ${var.ecs_services[each.key].codepipeline_container_definitions}
 }
 EOF
@@ -79,5 +80,4 @@ EOF
       EOF
     }
   }
-
 }
