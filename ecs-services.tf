@@ -24,6 +24,8 @@ resource "aws_ecs_task_definition" "this" {
       efs_volume_configuration {
         file_system_id = var.ecs_services[each.key].efs_volume.file_system_id
         root_directory = var.ecs_services[each.key].efs_volume.root_directory
+        transit_encryption = var.ecs_services[each.key].efs_volume.transit_encryption
+        transit_encryption_port = var.ecs_services[each.key].efs_volume.transit_encryption_port
       }
     }
   }
