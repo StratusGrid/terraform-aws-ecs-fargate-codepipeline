@@ -1,8 +1,6 @@
 module "ecs_app_iam_role" {
   source  = "StratusGrid/ecs-iam-role-builder/aws"
   version = "~> 1.0"
-  # source  = "github.com/GenesisFunction/terraform-aws-ecs-iam-role-builder"
-  # source = "./modules/ecs-iam-role-builder"
 
   cloudwatch_logs_policy     = true
   cloudwatch_logs_group_path = module.ecs_fargate_app.log_group_path
