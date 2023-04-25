@@ -67,6 +67,14 @@ resource "aws_service_discovery_service" "discovery_service" {
 ---
 Valid combinations of cpu/memory in task definition is found [here](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html)
 ```hcl
+resource "aws_efs_file_system" "my_efs_vol" {
+  creation_token = "my-efs-vol"
+
+  tags = {
+    Name = "MyEFSVol"
+  }
+}
+
 module "ecs_fargate_app" {
   source  = "StratusGrid/ecs-fargate-codepipeline/aws"
   version = "<latest>"
@@ -99,6 +107,15 @@ locals {
     enable_execute_command = true
 
     service_registries = {}
+
+    # volume configs
+    efs_volume = {
+      name           = "MyEFSVol"
+      file_system_id = aws_efs_file_system.my_efs_vol.id
+      root_directory = "/"
+      transit_encryption = null
+      transit_encryption_port = null
+    }
 
     #NOTE: ALBs are not created by the module.
     health_check_grace_period_seconds = 600
@@ -181,6 +198,13 @@ locals {
             "hostPort": 8080,
             "protocol": "tcp",
             "containerPort": 8080
+          }
+        ],
+        "mountPoints": [
+          {
+            "sourceVolume": "MyEFSVol",
+            "containerPath": "/container-mountpoint/",
+            "readOnly": false
           }
         ],
         "environment": [
