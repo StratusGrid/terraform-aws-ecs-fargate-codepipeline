@@ -77,7 +77,8 @@ resource "aws_efs_file_system" "my_efs_vol" {
 
 module "ecs_fargate_app" {
   source  = "StratusGrid/ecs-fargate-codepipeline/aws"
-  version = "<latest>"
+  # StratusGrid recommends pinning every module to a specific version
+  version = "x.x.x"
   # source  = "github.com/StratusGrid/terraform-aws-ecs-fargate-codepipeline"
 
   ecs_cluster_name   = "${var.name_prefix}-app${local.name_suffix}"
