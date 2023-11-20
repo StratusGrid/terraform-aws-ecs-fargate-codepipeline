@@ -249,8 +249,6 @@ locals {
 | <a name="input_env_name"></a> [env\_name](#input\_env\_name) | name of environment/stage, passed in from root module | `string` | n/a | yes |
 | <a name="input_input_tags"></a> [input\_tags](#input\_input\_tags) | Map of tags to apply to resources | `map(string)` | <pre>{<br>  "Developer": "StratusGrid",<br>  "Provisioner": "Terraform"<br>}</pre> | no |
 | <a name="input_log_retention_days"></a> [log\_retention\_days](#input\_log\_retention\_days) | Number of days to retain logs for. Configured on Log Group which all log streams are put under. | `number` | n/a | yes |
-| <a name="input_termination_wait_time"></a> [termination\_wait\_time](#input\_termination\_wait\_time) | Deprecated. Use codedeploy\_termination\_wait\_time in the ecs\_services object instead. | `number` | `5` | no |
-| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC which all resources will be put into | `string` | n/a | yes |
 
 ## Outputs
 

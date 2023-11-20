@@ -13,12 +13,6 @@ variable "log_retention_days" {
   type        = number
 }
 
-#tflint-ignore: terraform_unused_declarations  -- Ignores warning about unused resources
-variable "vpc_id" {
-  description = "VPC which all resources will be put into"
-  type        = string
-}
-
 variable "input_tags" {
   description = "Map of tags to apply to resources"
   type        = map(string)
@@ -26,13 +20,6 @@ variable "input_tags" {
     Developer   = "StratusGrid"
     Provisioner = "Terraform"
   }
-}
-
-#tflint-ignore: terraform_unused_declarations  -- Ignores warning about unused resources
-variable "termination_wait_time" {
-  description = "Deprecated. Use codedeploy_termination_wait_time in the ecs_services object instead."
-  type        = number
-  default     = 5
 }
 
 variable "codebuild_container_duplicator_name" {
