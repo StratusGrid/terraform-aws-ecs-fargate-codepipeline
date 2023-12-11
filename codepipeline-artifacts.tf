@@ -9,7 +9,6 @@ resource "aws_s3_bucket_object" "artifacts_s3" {
   source_hash = md5(jsonencode(data.archive_file.artifacts[each.key].source))
 }
 
-#tflint-ignore: terraform_required_providers -- Ignore warning on version constraint
 data "archive_file" "artifacts" {
   for_each = var.ecs_services
 
